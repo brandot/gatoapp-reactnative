@@ -81,7 +81,7 @@ const GameServices = (userSelection: string, initialTurnUser: boolean) => {
                         setTurnUser(turnUser);
 
                         if (checkWinnerBot(findBot, newPosition)) {
-                            Alert.alert(Strings.information, Strings.winnerMessage, [
+                            Alert.alert(Strings.information, Strings.winnerMessageBot, [
                                 {text: 'OK', onPress: () => newGame()}
                             ]);
                         }
@@ -109,7 +109,7 @@ const GameServices = (userSelection: string, initialTurnUser: boolean) => {
                 setTurnUser(!turnUser);
 
                 if (checkWinnerBot(find, newPosition)) {
-                    Alert.alert(Strings.information, Strings.winnerMessage, [
+                    Alert.alert(Strings.information, Strings.winnerMessageBot, [
                         {text: 'OK', onPress: () => newGame()}
                     ]);
                 }
@@ -134,19 +134,36 @@ const GameServices = (userSelection: string, initialTurnUser: boolean) => {
             return true;
         }
 
-        const winnerDiagonal = matriz.filter(it => (it.row === item.row && it.row === item.col && it.optionGame === userSelection));
-        console.log('winnerDiagonal', winnerDiagonal);
-        if (winnerDiagonal.length === 3) {
+        const winnerDiagonalLeft = matriz.filter(it => it.row === item.col || (it.row === item.col && it.row + item.col === 4 && it.optionGame === userSelection));
+        if (winnerDiagonalLeft.length === 3) {
             return true;
         }
-        return false;
+
+        const winnerDiagonalRight = matriz.filter(it => it.row === item.col || (it.row !== item.col && it.row + item.col === 4 && it.optionGame === userSelection));
+        if (winnerDiagonalRight.length === 3) {
+            return true;
+        }
     }
 
     const checkWinnerBot = (matriz: ItemGame[], position: number) => {
-        const winnerRow = matriz.filter(it => it.id === position && it.optionGame === botSelection);
-        if (winnerRow.length === 3) {
-            return true;
+        const item = matriz.filter(it => it.id === position);
+        if (item.length > 0) {
+            const winnerRow = matriz.filter(it => it.row === item[0].row && it.optionGame === botSelection);
+            if (winnerRow.length === 3) {
+                return true;
+            }
+
+            const winnerCol = matriz.filter(it => it.col === item[0].col && it.optionGame === botSelection);
+            if (winnerCol.length === 3) {
+                return true;
+            }
+
+            const winnerDiagonalLeft = matriz.filter(it => ((it.row === item[0].col) || (it.row === item[0].col && it.row + item[0].col === 4)) && it.optionGame === botSelection);
+            if (winnerDiagonalLeft.length === 3) {
+                return true;
+            }
         }
+        return false;
     }
 
     return {initGame, newGame, onSelected, turnUser};
