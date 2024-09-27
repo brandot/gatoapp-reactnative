@@ -1,29 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Alert } from 'react-native';
 import Strings from '../constants/Strings';
-
-interface ItemGame {
-    id: number,
-    row: number,
-    col: number,
-    optionGame: string
-}
-
-interface GameServicesProps {
-    userSelection: string,
-    initialTurnUser: boolean,
-    userName: string,
-    userNameBot: string
-}
-
-interface GameServicesReturn {
-    initGame: ItemGame[],
-    newGame: () => void,
-    onSelected: (ItemGame) => void,
-    turnUser: boolean,
-    scoreUser: number,
-    scoreBot: number
-}
+import { GameServicesProps, GameServicesReturn, ItemGame } from '../interfaces/GlobalInterfaces';
 
 const GameServices = ({userSelection, initialTurnUser, userName, userNameBot}: GameServicesProps): GameServicesReturn => {
     const [initGame, setInitGame] = useState([]);
