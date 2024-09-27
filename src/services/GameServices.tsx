@@ -9,10 +9,28 @@ interface ItemGame {
     optionGame: string
 }
 
-const GameServices = (userSelection: string, initialTurnUser: boolean) => {
+interface GameServicesProps {
+    userSelection: string,
+    initialTurnUser: boolean,
+    userName: string,
+    userNameBot: string
+}
+
+interface GameServicesReturn {
+    initGame: ItemGame[],
+    newGame: () => void,
+    onSelected: (ItemGame) => void,
+    turnUser: boolean,
+    scoreUser: number,
+    scoreBot: number
+}
+
+const GameServices = ({userSelection, initialTurnUser, userName, userNameBot}: GameServicesProps): GameServicesReturn => {
     const [initGame, setInitGame] = useState([]);
     const [turnUser, setTurnUser] = useState(false);
     const [botSelection, setBotSelection] = useState('');
+    const [scoreUser, setScoreUser] = useState(0);
+    const [scoreBot, setScoreBot] = useState(0);
 
     const onHandleInitGame = () => {
         // Inicializamos la matriz para juego
@@ -63,7 +81,8 @@ const GameServices = (userSelection: string, initialTurnUser: boolean) => {
 
             //Validamos previamente si el usuario ganó
             if (checkWinner(find, item)) {
-                Alert.alert(Strings.information, Strings.winnerMessage, [
+                setScoreUser(scoreUser + 1);
+                Alert.alert(Strings.information, `${userName} has ganado el juego. ¡Felicidades!`, [
                     {text: 'OK', onPress: () => newGame()}
                 ]);
             } else {
@@ -81,7 +100,8 @@ const GameServices = (userSelection: string, initialTurnUser: boolean) => {
                         setTurnUser(turnUser);
 
                         if (checkWinnerBot(findBot, newPosition)) {
-                            Alert.alert(Strings.information, Strings.winnerMessageBot, [
+                            setScoreBot(scoreBot + 1);
+                            Alert.alert(Strings.information, `${userNameBot} ha ganado el juego, intentalo nuevamente`, [
                                 {text: 'OK', onPress: () => newGame()}
                             ]);
                         }
@@ -109,7 +129,8 @@ const GameServices = (userSelection: string, initialTurnUser: boolean) => {
                 setTurnUser(!turnUser);
 
                 if (checkWinnerBot(find, newPosition)) {
-                    Alert.alert(Strings.information, Strings.winnerMessageBot, [
+                    setScoreBot(scoreBot + 1);
+                    Alert.alert(Strings.information, `${userNameBot} ha ganado el juego, intentalo nuevamente`, [
                         {text: 'OK', onPress: () => newGame()}
                     ]);
                 }
@@ -134,12 +155,12 @@ const GameServices = (userSelection: string, initialTurnUser: boolean) => {
             return true;
         }
 
-        const winnerDiagonalLeft = matriz.filter(it => it.row === item.col || (it.row === item.col && it.row + item.col === 4 && it.optionGame === userSelection));
+        const winnerDiagonalLeft = matriz.filter(it => it.row === it.col && it.optionGame === userSelection);
         if (winnerDiagonalLeft.length === 3) {
             return true;
         }
 
-        const winnerDiagonalRight = matriz.filter(it => it.row === item.col || (it.row !== item.col && it.row + item.col === 4 && it.optionGame === userSelection));
+        const winnerDiagonalRight = matriz.filter(it => it.row + it.col === 4 && it.optionGame === userSelection);
         if (winnerDiagonalRight.length === 3) {
             return true;
         }
@@ -158,15 +179,20 @@ const GameServices = (userSelection: string, initialTurnUser: boolean) => {
                 return true;
             }
 
-            const winnerDiagonalLeft = matriz.filter(it => ((it.row === item[0].col) || (it.row === item[0].col && it.row + item[0].col === 4)) && it.optionGame === botSelection);
+            const winnerDiagonalLeft = matriz.filter(it => it.row === it.col && it.optionGame === botSelection);
             if (winnerDiagonalLeft.length === 3) {
+                return true;
+            }
+
+            const winnerDiagonalRight = matriz.filter(it => it.row + it.col === 4 && it.optionGame === botSelection);
+            if (winnerDiagonalRight.length === 3) {
                 return true;
             }
         }
         return false;
     }
 
-    return {initGame, newGame, onSelected, turnUser};
+    return {initGame, newGame, onSelected, turnUser, scoreUser, scoreBot};
 }
 
 export default GameServices;

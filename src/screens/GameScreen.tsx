@@ -8,7 +8,7 @@ import GameServices from '../services/GameServices';
 
 const Game = ({ navigation, route }) => {
     const {userName, userNameBot, userSelection, botSelection, initialTurnUser} = route.params.data;
-    const {initGame, newGame, onSelected, turnUser} = GameServices(userSelection, initialTurnUser);
+    const {initGame, newGame, onSelected, turnUser, scoreUser, scoreBot} = GameServices({userSelection, initialTurnUser, userName, userNameBot});
 
     const onEndGame = () => {
         navigation.reset({
@@ -22,12 +22,12 @@ const Game = ({ navigation, route }) => {
             <View style={styles.opciones}>
                 <View style={styles.puntaje}>
                     <Text style={styles.tipo}>{userSelection}</Text>
-                    <Text style={styles.dato}>{userName}: 0</Text>
+                    <Text style={styles.dato}>{userName}: {scoreUser}</Text>
                 </View>
                 <Text style={{fontSize: 20, fontWeight: 'bold', color: Colors.textColor}}>VS</Text>
                 <View style={styles.puntaje}>
                     <Text style={styles.tipo}>{botSelection}</Text>
-                    <Text style={styles.dato}>{userNameBot}: 0</Text>
+                    <Text style={styles.dato}>{userNameBot}: {scoreBot}</Text>
                 </View>
             </View>
             <View style={{flexDirection: 'row', alignItems: 'center', padding: 10, marginTop: 10}}>

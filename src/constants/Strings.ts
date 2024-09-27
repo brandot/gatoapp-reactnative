@@ -6,6 +6,4 @@ export default {
     endgame: "TERMINAR JUEGO",
     information: "Información",
     informationMessage: "Juego termina en empate",
-    winnerMessage: "¡Felicidades! ¡Has ganado el juego!",
-    winnerMessageBot: "¡El BOT ha ganado el juego!"
   };
